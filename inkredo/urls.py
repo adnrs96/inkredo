@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from server.views.company import create_company_endpoint
+from server.views.company import create_company_endpoint, handle_company_endpoint
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('company/', create_company_endpoint),
+    path('company/<int:company_id>', handle_company_endpoint),
 ]
