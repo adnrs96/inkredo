@@ -61,6 +61,24 @@ def handle_user_endpoint(request: HttpRequest, user_id: int) -> HttpResponse:
         res = JsonResponse({'msg': 'success', 'user': data})
         res.status_code = 200
         return res
+    elif request.method == 'DELETE':
+        user = get_user_by_id(user_id)
+        if user is None:
+            res = JsonResponse({'msg': 'Invalid user id'})
+            res.status_code = 400
+            return res
+
+        try:
+            user.delete()
+        except Error as e:
+            logging.error(e)
+            res = JsonResponse({'msg': 'Something went wrong while attempting to delete!'})
+            res.status_code = 500
+            return res
+
+        res = JsonResponse({'msg': 'success'})
+        res.status_code = 200
+        return res
     else:
         res = JsonResponse({'msg': 'Only GET requests accepted.'})
         res.status_code = 405
