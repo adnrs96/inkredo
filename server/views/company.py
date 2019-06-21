@@ -3,7 +3,9 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from server.lib.create import do_create_company
 from server.models import Company
 from server.actions import get_company_by_id
+from django.db import Error
 import json
+import logging
 
 # Create your views here.
 def create_company_endpoint(request: HttpRequest) -> HttpResponse:
@@ -51,6 +53,24 @@ def handle_company_endpoint(request: HttpRequest, company_id: int) -> HttpRespon
         	"email": company.email,
         }
         res = JsonResponse({'msg': 'success', 'company': data})
+        res.status_code = 200
+        return res
+    elif request.method == 'DELETE':
+        company = get_company_by_id(company_id)
+        if company is None:
+            res = JsonResponse({'msg': 'Invalid company id'})
+            res.status_code = 400
+            return res
+
+        try:
+            company.delete()
+        except Error as e:
+            logging.error(e)
+            res = JsonResponse({'msg': 'Something went wrong while attempting to delete!'})
+            res.status_code = 500
+            return res
+
+        res = JsonResponse({'msg': 'success'})
         res.status_code = 200
         return res
     else:
