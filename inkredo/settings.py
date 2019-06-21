@@ -21,6 +21,7 @@ if not secrets_file.read(os.path.join("/etc/inkredo/secrets.conf")):
     print('Cannot Find secrets file. Please create secrets file at /etc/inkredo/secrets.conf with proper secret values and relaunch')
     sys.exit(1)
 
+
 def get_secret(key: str, default_value: Optional[Any]=None) -> Optional[Any]:
     if secrets_file.has_option('secrets', key):
         return secrets_file.get('secrets', key)
@@ -34,7 +35,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_secret('secret_key', None)
+SECRET_KEY = 'fagaegagagagagagagg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
