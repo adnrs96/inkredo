@@ -10,7 +10,21 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+from typing import Optional, Any
+
 import os
+import sys
+import configparser
+
+secrets_file = configparser.RawConfigParser()
+if not secrets_file.read(os.path.join("/etc/inkredo/secrets.conf")):
+    print('Cannot Find secrets file. Please create secrets file at /etc/inkredo/secrets.conf with proper secret values and relaunch')
+    sys.exit(1)
+
+def get_secret(key: str, default_value: Optional[Any]=None) -> Optional[Any]:
+    if secrets_file.has_option('secrets', key):
+        return secrets_file.get('secrets', key)
+    return default_value
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +34,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%p)svgpb#f3ajr!na4#$+a&zi4@%pgwq6x&&@+v0_(ok4glil$'
+SECRET_KEY = get_secret('secret_key', None)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
