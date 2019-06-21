@@ -23,3 +23,16 @@ class Company(AbstractBaseUser):
         default=PRIVATE
     )
     objects = UserManager()
+
+class User(AbstractBaseUser):
+    USERNAME_FIELD = 'username'
+    email = models.EmailField(blank=False, unique=True)
+    username = models.CharField(max_length=40, unique=True)
+    full_name = models.CharField(max_length=50)
+    company = models.ForeignKey(
+        Company,
+        related_name='company_users',
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    objects = UserManager()
