@@ -43,3 +43,25 @@ def create_user_endpoint(request: HttpRequest) -> HttpResponse:
     res = JsonResponse({'msg': 'success', 'user_id': new_user.id})
     res.status_code = 200
     return res
+
+def handle_user_endpoint(request: HttpRequest, user_id: int) -> HttpResponse:
+    if request.method == 'GET':
+        user = get_user_by_id(user_id)
+        if user is None:
+            res = JsonResponse({'msg': 'Invalid user id'})
+            res.status_code = 400
+            return res
+
+        data = {
+        	"full_name": user.full_name,
+        	"email": user.email,
+        	"username": user.username,
+        	"company": user.company.id,
+        }
+        res = JsonResponse({'msg': 'success', 'user': data})
+        res.status_code = 200
+        return res
+    else:
+        res = JsonResponse({'msg': 'Only GET requests accepted.'})
+        res.status_code = 405
+        return res
