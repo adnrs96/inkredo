@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from server.views.company import create_company_endpoint, handle_company_endpoint
 from server.views.users import create_user_endpoint, handle_user_endpoint
+from server.views.accounts import handle_login
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +25,5 @@ urlpatterns = [
     path('company/<int:company_id>', handle_company_endpoint),
     path('user/', create_user_endpoint),
     path('user/<int:user_id>', handle_user_endpoint),
+    path('login', handle_login),
 ]

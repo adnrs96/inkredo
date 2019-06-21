@@ -6,3 +6,6 @@ def get_company_by_id(id: int) -> Optional[Company]:
 
 def get_user_by_id(id: int) -> Optional[User]:
     return User.objects.filter(id=id).first()
+
+def get_user_by_username(username: str) -> Optional[User]:
+    return User.objects.filter(username=username).first()
