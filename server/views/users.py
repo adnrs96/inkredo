@@ -62,6 +62,10 @@ def handle_user_endpoint(request: HttpRequest, user_id: int) -> HttpResponse:
         res.status_code = 200
         return res
     elif request.method == 'DELETE':
+        if not request.user.is_authenticated or request.user.id != user_id:
+            res = JsonResponse({'msg': 'Access Denied.'})
+            res.status_code = 403
+            return res
         user = get_user_by_id(user_id)
         if user is None:
             res = JsonResponse({'msg': 'Invalid user id'})
@@ -80,6 +84,10 @@ def handle_user_endpoint(request: HttpRequest, user_id: int) -> HttpResponse:
         res.status_code = 200
         return res
     elif request.method == 'PATCH':
+        if not request.user.is_authenticated or request.user.id != user_id:
+            res = JsonResponse({'msg': 'Access Denied.'})
+            res.status_code = 403
+            return res
         user = get_user_by_id(user_id)
         if user is None:
             res = JsonResponse({'msg': 'Invalid user id'})
