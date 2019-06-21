@@ -73,6 +73,41 @@ def handle_company_endpoint(request: HttpRequest, company_id: int) -> HttpRespon
         res = JsonResponse({'msg': 'success'})
         res.status_code = 200
         return res
+    elif request.method == 'PATCH':
+        company = get_company_by_id(company_id)
+        if company is None:
+            res = JsonResponse({'msg': 'Invalid company id'})
+            res.status_code = 400
+            return res
+
+        try:
+            patch_data = json.loads(request.body)
+        except json.decoder.JSONDecodeError:
+            res = JsonResponse({'msg': 'Invalid JSON Body.'})
+            res.status_code = 400
+            return res
+
+        # We construct this API to update only one field via one request.
+        field_to_update = patch_data.get('update_field', '')
+        updated_value = patch_data.get('update_value', '')
+        if field_to_update not in ('name', 'address', 'type'):
+            res = JsonResponse({'msg': 'Given field cannot be updated.'})
+            res.status_code = 403
+            return res
+
+        setattr(company, field_to_update, updated_value)
+
+        try:
+            company.save()
+        except Error as e:
+            logging.error(e)
+            res = JsonResponse({'msg': 'Something went wrong while attempting to update!'})
+            res.status_code = 500
+            return res
+
+        res = JsonResponse({'msg': 'success'})
+        res.status_code = 200
+        return res
     else:
         res = JsonResponse({'msg': 'Only GET requests accepted.'})
         res.status_code = 405
